@@ -1,0 +1,12 @@
+checkpoints/
+__pycache__/
+logs/
+dqg/__pychache__/
+
+venv/
+
+venv_35/
+
+.idea/
+
+Xitari2Player/
