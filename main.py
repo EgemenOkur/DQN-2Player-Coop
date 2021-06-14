@@ -15,7 +15,7 @@ import sys
 from dqn.game_screen import GameScreen
 from dqn.scale import scale_image
 
-flags = tf.app.flags
+flags = tf.compat.v1.flags
 
 # Model
 flags.DEFINE_string('model', 'm1', 'Type of model')
@@ -35,7 +35,8 @@ flags.DEFINE_integer('random_seed', 123, 'Value of random seed')
 FLAGS = flags.FLAGS
 
 # Set random seed
-tf.set_random_seed(FLAGS.random_seed)
+
+tf.random.set_seed(FLAGS.random_seed)
 random.seed(FLAGS.random_seed)
 
 if FLAGS.gpu_fraction == '':
@@ -76,8 +77,8 @@ def getRgbFromPalette(ale, surface, rgb_new):
 
 
 def main(_):
-
-  with tf.Session() as sess:
+  print("why not working")
+  with tf.compat.v1.Session() as sess:
     FLAGS.use_gpu = False
     config = get_config(FLAGS) or FLAGS
 
@@ -259,4 +260,7 @@ def main(_):
 
 
 if __name__ == '__main__':
-  tf.app.run()
+    tf.compat.v1.app.run(
+        main=None, argv=None
+    )
+    print("thats why")

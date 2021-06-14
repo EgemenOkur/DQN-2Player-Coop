@@ -20,7 +20,7 @@ from dqn.scale import scale_image
 
 from dqn.history import History
 
-flags = tf.app.flags
+flags = tf.compat.v1.flags
 
 # Model
 flags.DEFINE_string('model', 'm1', 'Type of model')
@@ -40,7 +40,7 @@ flags.DEFINE_integer('random_seed', 123, 'Value of random seed')
 FLAGS = flags.FLAGS
 
 # Set random seed
-tf.set_random_seed(FLAGS.random_seed)
+tf.random.set_seed(FLAGS.random_seed)
 random.seed(FLAGS.random_seed)
 
 if FLAGS.gpu_fraction == '':
@@ -377,4 +377,4 @@ def main(_):
       agent2.play()
 
 if __name__ == '__main__':
-  tf.app.run()
+  tf.compat.v1.app.run

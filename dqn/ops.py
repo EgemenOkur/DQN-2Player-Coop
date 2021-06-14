@@ -1,5 +1,6 @@
-import tensorflow as tf
-from tensorflow.contrib.layers.python.layers import initializers
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+#from tensorflow.contrib.layers.python.layers import initializers
 
 def clipped_error(x):
   # Huber loss
@@ -12,7 +13,7 @@ def conv2d(x,
            output_dim,
            kernel_size,
            stride,
-           initializer=tf.contrib.layers.xavier_initializer(),
+           initializer=tf.compat.v1.keras.initializers.glorot_normal,
            activation_fn=tf.nn.relu,
            data_format='NHWC',
            padding='VALID',

@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
 reposrc=git@github.com:choo8/Xitari2Player.git
-localrepo=xitari
+localrepo=Xitari2Player
 localrepo_vc_dir=$localrepo/.git
 
 # Build and install Python interface for Xitari
 if [! -d $localrepo_vc_dir]
 then
 	echo "Cloning Github repo"
-	git clone $reposrc $localrepo
+	git clone $reposrc
 else
 	echo "Pulling from Github repo"
 	cd $localrepo
@@ -17,7 +17,7 @@ fi
 
 # Compile source code
 echo "Compiling source code for Xitari2Player"
-cd xitari
+cd Xitari2Player
 cmake .
 make install
 
