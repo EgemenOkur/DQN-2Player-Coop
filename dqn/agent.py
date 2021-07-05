@@ -20,7 +20,7 @@ class Agent(BaseModel):
     self.identity = identity
 
     super(Agent, self).__init__(config)
-
+    self.step = 0
     self.sess = sess
     self.weight_dir = 'weights'
 

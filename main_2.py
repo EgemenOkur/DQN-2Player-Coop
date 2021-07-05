@@ -82,8 +82,7 @@ def getRgbFromPalette(ale, surface, rgb_new):
 
 def main(_):
 
-  with tf.Session() as sess:
-    FLAGS.use_gpu = False
+  with tf.compat.v1.Session() as sess:
     config = get_config(FLAGS) or FLAGS
 
     if config.env_type == 'simple':
@@ -97,7 +96,7 @@ def main(_):
     if not FLAGS.use_gpu:
       config.cnn_format = 'NHWC'
 
-    roms = 'roms/Pong2PlayerVS.bin'
+    roms = 'roms/Pong2Player.bin'
     ale = ALEInterface(roms.encode('utf-8'))
     width = ale.ale_getScreenWidth()
     height = ale.ale_getScreenHeight()
@@ -159,8 +158,12 @@ def main(_):
             ep_rewardsA, ep_rewardsB, actionsA, actionsB = [], [], [], []
           
           # 1. predict
-          action1 = agent.predict(agent.history.get())
-          action2 = agent2.predict(agent2.history.get())
+          if config.cnn_format == 'NHWC':
+            action1 = agent.predict(agent.history.get().T)
+            action2 = agent2.predict(agent2.history.get().T)
+          else:
+            action1 = agent.predict(agent.history.get())
+            action2 = agent2.predict(agent2.history.get())
 
           # 2. act
           ale.ale_act2(action1, action2)
@@ -316,8 +319,12 @@ def main(_):
 
           while not ale.ale_isGameOver():
             # 1. predict
-            action1 = agent.predict(agent.history.get())
-            action2 = agent2.predict(agent2.history.get())
+            if config.cnn_format == 'NHWC':
+              action1 = agent.predict(agent.history.get().T)
+              action2 = agent2.predict(agent2.history.get().T)
+            else:
+              action1 = agent.predict(agent.history.get())
+              action2 = agent2.predict(agent2.history.get())
 
             # 2. act
             ale.ale_act2(action1, action2)
@@ -377,4 +384,6 @@ def main(_):
       agent2.play()
 
 if __name__ == '__main__':
-  tf.compat.v1.app.run
+  tf.compat.v1.app.run(
+    main=None, argv=None
+  )

@@ -4,7 +4,8 @@ import time
 import random
 import numpy as np
 from tqdm import tqdm
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 from functools import *
 
 from .base import BaseModel
@@ -21,7 +22,7 @@ class Agent2(BaseModel):
     super(Agent2, self).__init__(config)
     self.sess = sess
     self.weight_dir = 'weights'
-
+    self.step = 0
     self.env = environment
     self.history = History(self.config)
     self.memory = ReplayMemory(self.config, self.model_dir)
