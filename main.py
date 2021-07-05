@@ -77,15 +77,15 @@ def getRgbFromPalette(ale, surface, rgb_new):
 
 
 def main(_):
-  print("why not working")
   with tf.compat.v1.Session() as sess:
-    FLAGS.use_gpu = False
     config = get_config(FLAGS) or FLAGS
 
     if config.env_type == 'simple':
       env = SimpleGymEnvironment(config)
     else:
       env = GymEnvironment(config)
+
+    print("tf.test.is_gpu_available(): {}".format(tf.test.is_gpu_available()))
 
     if not tf.test.is_gpu_available() and FLAGS.use_gpu:
       raise Exception("use_gpu flag is true when no GPUs are available")
@@ -125,7 +125,7 @@ def main(_):
 
       numpy_surface = np.frombuffer(game_surface.get_buffer(), dtype=np.uint8)
       rgb = getRgbFromPalette(ale, game_surface, numpy_surface)
-      del numpy_surface        
+      del numpy_surface
       game_screen.paint(rgb)
       pooled_screen = game_screen.grab()
       scaled_pooled_screen = scale_image(pooled_screen)
@@ -141,11 +141,17 @@ def main(_):
           ep_rewards, actions = [], []
 
         # 1. predict
-        action = agent.predict(agent.history.get())
+        if config.cnn_format == 'NHWC':
+            action = agent.predict(agent.history.get().T)
+        else:
+            action = agent.predict(agent.history.get())
+
+
         # 2. act
         ale.ale_act2(action, np.random.choice([20, 21, 23, 24]))
         terminal = ale.ale_isGameOver()
         reward = ale.ale_getRewardA()
+
 
         # screen, reward, terminal = agent.env.act(action, is_training=True)
         # 3. observe
@@ -156,7 +162,7 @@ def main(_):
         # Fill buffer of game screen with current frame
         numpy_surface = np.frombuffer(game_surface.get_buffer(), dtype=np.uint8)
         rgb = getRgbFromPalette(ale, game_surface, numpy_surface)
-        del numpy_surface        
+        del numpy_surface
         game_screen.paint(rgb)
         pooled_screen = game_screen.grab()
         scaled_pooled_screen = scale_image(pooled_screen)
@@ -177,7 +183,7 @@ def main(_):
           numpy_surface = np.frombuffer(game_surface.get_buffer(), dtype=np.uint8)
 
           rgb = getRgbFromPalette(ale, game_surface, numpy_surface)
-          del numpy_surface        
+          del numpy_surface
           game_screen.paint(rgb)
           pooled_screen = game_screen.grab()
           scaled_pooled_screen = scale_image(pooled_screen)
